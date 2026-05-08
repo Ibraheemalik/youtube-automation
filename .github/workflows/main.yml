@@ -38,6 +38,7 @@ jobs:
             Pillow \
             numpy \
             edge-tts \
+            google-auth-oauthlib \
             python-dotenv
 
       - name: Create Folders
