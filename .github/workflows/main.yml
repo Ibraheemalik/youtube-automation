@@ -53,6 +53,7 @@ jobs:
             Pillow \
             numpy \
             edge-tts \
+            moviepy==1.0.3 \
             python-dotenv
 
       # ─────────────────────────────
