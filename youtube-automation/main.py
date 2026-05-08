@@ -28,7 +28,7 @@ import requests
 import edge_tts
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 import PIL.Image as PilImage
-import google.generativeai as genai
+from google import genai
 
 from moviepy.editor import (
     AudioFileClip, ColorClip, CompositeAudioClip,
