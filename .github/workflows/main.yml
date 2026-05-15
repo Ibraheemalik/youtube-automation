@@ -2,12 +2,8 @@ name: YouTube Automation Production
 
 on:
   schedule:
-    # Weekday run (Mon-Sat)
     - cron: '0 23 * * 1-6'
-
-    # Sunday deep run
     - cron: '0 15 * * 0'
-
   workflow_dispatch:
 
 jobs:
@@ -16,31 +12,23 @@ jobs:
     timeout-minutes: 180
 
     steps:
-      # ─────────────────────────────
       # 1. Checkout code
-      # ─────────────────────────────
       - name: Checkout Repository
-         uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
-      # ─────────────────────────────
       # 2. Python setup
-      # ─────────────────────────────
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      # ─────────────────────────────
       # 3. System dependencies
-      # ─────────────────────────────
       - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      # ─────────────────────────────
-      # 4. Python dependencies (FIXED)
-      # ─────────────────────────────
+      # 4. Python dependencies (UPDATED VERSIONS)
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
@@ -61,17 +49,13 @@ jobs:
             imageio-ffmpeg>=0.4.9 \
             python-dotenv
 
-      # ─────────────────────────────
       # 5. Create folders
-      # ─────────────────────────────
       - name: Create Folders
         run: |
           mkdir -p output
           mkdir -p temp
 
-      # ─────────────────────────────
       # 6. Environment setup
-      # ─────────────────────────────
       - name: Create Environment File
         run: |
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
@@ -80,17 +64,13 @@ jobs:
           echo "YT_CLIENT_SECRET=${{ secrets.YT_CLIENT_SECRET }}" >> .env
           echo "YT_REFRESH_TOKEN=${{ secrets.YT_REFRESH_TOKEN }}" >> .env
 
-      # ─────────────────────────────
       # 7. Run script
-      # ─────────────────────────────
       - name: Run Production Script
         run: python youtube-automation/main.py
         env:
           PYTHONPATH: ${{ github.workspace }}/youtube-automation
 
-      # ─────────────────────────────
-      # 8. Upload output (ONLY if success)
-      # ─────────────────────────────
+      # 8. Upload output
       - name: Upload Finished Video
         if: success()
         uses: actions/upload-artifact@v4
@@ -98,9 +78,7 @@ jobs:
           name: youtube-video
           path: output/
 
-      # ─────────────────────────────
       # 9. Upload logs if failed
-      # ─────────────────────────────
       - name: Upload Logs (if failure)
         if: failure()
         uses: actions/upload-artifact@v4
